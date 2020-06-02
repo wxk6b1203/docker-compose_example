@@ -1,0 +1,33 @@
+version: '3'
+services:
+  mysql-master:
+    container_name: mysql
+    build:
+      context: ./
+      dockerfile: master/Dockerfile
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=replicas_db"
+    networks:
+      - sql_net
+    ports:
+      - "33065:3306"
+    restart: always
+    hostname: mysql-master
+  mysql-slave:
+    container_name: mysql_slave
+    build:
+      context: ./
+      dockerfile: slave/Dockerfile
+    networks:
+      - sql_net
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=replicas_db"
+    ports:
+      - "33066:3306"
+    restart: always
+    hostname: mysql-slave
+
+networks:
+    sql_net:
